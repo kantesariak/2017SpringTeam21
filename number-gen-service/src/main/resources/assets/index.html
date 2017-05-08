@@ -1,0 +1,138 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta name="generator" content=
+            "HTML Tidy for Linux (vers 25 March 2009), see www.w3.org"/>
+    <meta charset="UTF-8"/>
+
+    <title>Zipkin Demo</title><!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous" type="text/css"/><!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
+          crossorigin="anonymous" type="text/css"/>
+    <!-- Latest compiled and minified JavaScript -->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous" type="text/javascript">
+    </script>
+</head>
+
+<body>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+
+            <a class="navbar-brand" href="index.html">Bronto</a>
+        </div>
+    </div><!-- /.container-fluid -->
+</nav>
+<div class="container">
+    <div class="col-lg-4">
+        <h2>Search</h2>
+        <label for="rowId">Employee ID:</label>
+        <input type="text" name="employeeRowId" class="form-control" id="employeeRowId" placeholder="ID"/>
+        <br>
+        <button type="button" id="queryUserByRowId" class="btn btn-default">Query By ID</button>
+        <button type="button" class="btn btn-default" id="queryUser"> Query First User</button>
+        <br/>
+        <br/>
+        <hr/>
+    </div>
+
+
+
+    <div class="col-lg-8">
+        <h2>Employee Information</h2>
+        <form id="employeeForm" name="employeeForm" action="" method="get">
+            <div class="form-group">
+                <label for="firstName">First Name:</label>
+                <input type="text" name="first" class="form-control" id="firstName" placeholder="First Name"/>
+                <br>
+                <label for="lastName">Last Name:</label>
+                <input type="text" name="last" class="form-control" id="lastName" placeholder="Last Name"/>
+                <br>
+                <label for="email">Email:</label>
+                <input type="text" name="email" class="form-control" id="email"
+                       aria-describedby="emailHelp" placeholder="Email"/>
+                <br>
+                <small id="emailHelp" class="form-text text-muted">We'll never share your email
+                    with anyone else.
+                </small>
+                <br>
+                <br>
+                <label for="rowId">Row ID:</label>
+                <input type="text" name="row" class="form-control" id="rowId"
+                       aria-describedby="emailHelp" placeholder="ID"/>
+            </div>
+            <button type="button" id="submitForm" class="btn btn-primary">Submit</button>
+			<small id="emailHelp" class="form-text text-muted">Please don't NoSQL inject us :(
+            </small>
+        </form>
+    </div>
+</div>
+<script>
+    $('#queryUser').click(function() {
+        $.ajax({
+            type: 'GET',
+            url: 'http://localhost:8888/assets/number-gen-svc',
+            dataType: 'json',
+            success: function(data){
+                $('#firstName').val(data.employee.firstName);
+                $('#lastName').val(data.employee.lastName);
+                $('#email').val(data.employee.email);
+                $('#rowId').val(data.employee.rowId);
+            },
+            error: function(error){
+                console.log("Error:");
+                console.log(error);
+            }
+        });
+    });
+
+    $('#queryUserByRowId').click(function() {
+        $.ajax({
+            type: 'GET',
+            url: 'http://localhost:8888/assets/number-gen-svc',
+            data: { 'id': $('#employeeRowId').val() },
+            dataType: 'json',
+            success: function(data){
+                $('#firstName').val(data.employee.firstName);
+                $('#lastName').val(data.employee.lastName);
+                $('#email').val(data.employee.email);
+                $('#rowId').val(data.employee.rowId);
+            },
+            error: function(error){
+                console.log("Error:");
+                console.log(error);
+            }
+        });
+    });
+
+    $('#submitForm').click(function() {
+        $.ajax({
+            type: 'GET',
+            url: 'http://localhost:8888/assets/number-gen-svc/update-value',
+            data: $('#employeeForm').serialize(),
+            dataType: 'text',
+            success: function(data) {
+                console.log(data);
+                $('#employeeForm').after('<div class="alert alert-success"><strong>Success!</strong> Employee Data Updated.</div>');
+            },
+            error: function(error){
+                console.log("Error:");
+                console.log(error);
+                $('#employeeForm').after('<div class="alert alert-danger"><strong>Error!</strong> Update failed.</div>');
+            }
+        });
+    });
+
+
+</script>
+</body>
+</html>
+					
